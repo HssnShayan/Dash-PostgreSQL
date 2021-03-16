@@ -13,7 +13,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
 
-engine=create_engine('postgresql://postgres:test123456@postgresql:5432/test_db', echo=False)
+engine=create_engine('postgresql://postgresql:test123456@postgresql:5432/test_db', echo=False)
 Session=sessionmaker(bind=engine)
 session=Session()
 
