@@ -13,7 +13,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
 
-engine=create_engine('postgresql://postgres:test123456@localhost:5432/test_db', echo=False)
+engine=create_engine('postgresql://root:test123456@postgresql:5432/test_db', echo=False)
 Session=sessionmaker(bind=engine)
 session=Session()
 
@@ -30,8 +30,9 @@ class Person(Base):
 
 Base.metadata.create_all(engine)
 
+external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
-app = dash.Dash(__name__)
 myInputs=('First Name', 'Last Name', 'Age', 'Salary')
 
 app.layout = html.Div([
@@ -102,7 +103,7 @@ app.layout = html.Div([
         dcc.Graph(
             id='graph',
             style={'display': 'none'}
-            )], style={'textAlign': 'center', 'marginTop': '50px'})
+            )], style={'textAlign': 'center', 'marginTop': '10px'})
 
     
 
@@ -164,5 +165,62 @@ def fetch_data(clk1):
             raise PreventUpdate
 
 
+@app.callback(
+    Output('graph', 'figure'),
+    [Input('btn-graph', 'n_clicks')])
+def update_graph(n_clicks):
+    if n_clicks is None:
+        raise PreventUpdate
+    else:
+        persons=session.query(Person)
+        g3525=0
+        l3525=0
+        e3525=0
+        
+        for person in persons:
+            if person.age < 25:
+                l3525=l3525 + person.salary
+            elif person.age >= 25 and person.age <= 35:
+                e3525=e3525 + person.salary
+            else:
+                g3525=g3525 + person.salary
+
+        my_df=pd.DataFrame({
+            'Age': ['Age < 25', '25 =< Age =< 35', 'Age > 35'],
+            'Salary': [l3525, e3525,  g3525]
+        })
+
+        fig = px.bar(
+            my_df,
+            x='Age',
+            y='Salary',
+            width=850
+
+        )
+        return fig
+
+@app.callback(
+    Output('graph', 'style'),
+    Output('table', 'style_table'),
+    [Input('btn-fetch', 'n_clicks'),
+    Input('btn-graph', 'n_clicks')])
+def update_graph_table(n_clicks1, n_clicks2):
+    ctx = dash.callback_context
+    flag = ctx.triggered[0]['prop_id'].split('.')[0]
+    if n_clicks1 is None or n_clicks2 is None:
+        raise PreventUpdate
+    else:
+        if flag == 'btn-fetch':
+            return [{'display': 'none'}, {'height': '300px', 'overflowY': 'auto', 'width': '70%', 'margin': 'auto','display': 'inline-flex'}]
+        elif flag == 'btn-graph':
+            return [{'display': 'inline-flex'}, {'height': '300px', 'overflowY': 'auto', 'width': '70%', 'margin': 'auto','display': 'none'}]
+        else:
+            raise PreventUpdate
+
+
+
 if __name__ == '__main__':
     app.run_server(host='0.0.0.0', port=8050, debug=True)
+
+# if __name__ == '__main__':
+#     app.run_server(debug=True)
