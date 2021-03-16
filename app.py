@@ -13,7 +13,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
 
-engine=create_engine('postgresql://root:test123456@postgresql:5432/test_db', echo=False)
+engine=create_engine('postgresql://postgres:test123456@localhost:5432/test_db', echo=False)
 Session=sessionmaker(bind=engine)
 session=Session()
 
@@ -165,4 +165,4 @@ def fetch_data(clk1):
 
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server(host='0.0.0.0', port=8050, debug=True)
