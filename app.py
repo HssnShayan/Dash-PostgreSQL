@@ -82,7 +82,7 @@ app.layout = html.Div([
     style={'margin':'auto', 'paddingTop':'5px'})], 
     style={'backgroundColor': 'rgb(230, 230, 230)', 'fontWeight': 'bold',
     'textAlign': 'center', 'marginTop': '30px',
-    'height':'25px', 'fontFamily': 'arial', 'fontSize': '16px', 'width': '30%', 'margin': 'auto',
+    'height':'25px', 'fontFamily': 'arial', 'width': '30%', 'margin': 'auto',
     'borderRadius': '10px'}),
 
     
